@@ -30,7 +30,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="a9L-yF-fb0"/>
                     <connections>
-                        <outlet property="requestApiButton" destination="7Gg-V0-PgO" id="sxP-B3-oFQ"/>
+                        <outlet property="requestAPIButton" destination="7Gg-V0-PgO" id="sxP-B3-oFQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -11,7 +11,13 @@ class MainViewController: UIViewController {
 
     // MARK: - IBOutlet Properties
     
-    @IBOutlet weak var requestApiButton: UIButton!
+    @IBOutlet weak var requestAPIButton: UIButton!
+    
+    // MARK: - Properties
+    
+    private lazy var downloadManager: DownloadManager = {
+        return DownloadManager()
+    }()
     
     // MARK: - VC Lifecycle
     
@@ -19,7 +25,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
 
         setupNavigationBar()
-        setupRequestApiButton()
+        setupRequestAPIButton()
     }
 }
 
@@ -29,12 +35,12 @@ extension MainViewController {
     
     private func setupNavigationBar() {
         navigationItem.title = NSLocalizedString("JSON Placeholder", comment: "")
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
-    private func setupRequestApiButton() {
-        requestApiButton.setTitle(NSLocalizedString("Request API", comment: ""), for: .normal)
-        requestApiButton.addTarget(self, action: #selector(onClickRequestApiButton), for: .touchUpInside)
+    private func setupRequestAPIButton() {
+        requestAPIButton.setTitle(NSLocalizedString("Request API", comment: ""), for: .normal)
+        requestAPIButton.addTarget(self, action: #selector(requestAPITapped), for: .touchUpInside)
     }
 }
 
@@ -42,17 +48,32 @@ extension MainViewController {
 
 extension MainViewController {
 
-    @objc private func onClickRequestApiButton() {
+    @objc func requestAPITapped() {
         
-        handleRequestAPI()
+        fetchPhotos()
     }
 }
 
-// MARK: - API Methods
+// MARK: - Private Methods
 
 extension MainViewController {
     
-    private func handleRequestAPI() {
+    private func fetchPhotos() {
         
+        downloadManager.fetchPhotos { (photos, error) in
+            
+            if let error = error {
+                #if DEBUG
+                print("FetchPhotos error: \(error.localizedDescription)")
+                #endif
+                return
+            }
+            
+            if let photos = photos {
+                #if DEBUG
+                print("FetchPhotos success: \(photos.count)")
+                #endif
+            }
+        }
     }
 }
