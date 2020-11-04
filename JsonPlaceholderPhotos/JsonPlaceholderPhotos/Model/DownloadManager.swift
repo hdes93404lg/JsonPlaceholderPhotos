@@ -24,6 +24,12 @@ class DownloadManager {
     enum HttpMethod: String {
         case get
     }
+    
+    enum DownloadError: Error {
+        case invalidResponse
+        case noData
+        case failedRequest
+    }
 }
 
 // MARK: - API Methods
@@ -46,12 +52,23 @@ extension DownloadManager {
             }
             
             guard let data = data else {
-                completion(nil, nil)
+                completion(nil, DownloadError.noData)
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                completion(nil, DownloadError.invalidResponse)
+                return
+            }
+            
+            guard response.statusCode == 200 else {
+                completion(nil, DownloadError.failedRequest)
                 return
             }
         
             do {
-                let photos = try JSONDecoder().decode([Photo].self, from: data)
+                let decoder = JSONDecoder()
+                let photos = try decoder.decode([Photo].self, from: data)
                 completion(photos, nil)
             } catch {
                 completion(nil, error)
