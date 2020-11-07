@@ -11,6 +11,7 @@ class MainViewController: UIViewController {
 
     // MARK: - IBOutlet Properties
     
+    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var requestAPIButton: UIButton!
     
     // MARK: - Properties
@@ -19,13 +20,27 @@ class MainViewController: UIViewController {
         return DownloadManager()
     }()
     
+    private let photosSegueId = "PhotosSegueId"
+    
     // MARK: - VC Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupNavigationBar()
+        setupNameLabel()
         setupRequestAPIButton()
+    }
+    
+    // MARK: - UIStoryboardSegue
+     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == photosSegueId {
+            guard let photosVC = segue.destination as? PhotosCollectionViewController,
+                  let photos = sender as? [Photo] else { return }
+            photosVC.photos = photos
+        }
     }
 }
 
@@ -34,10 +49,14 @@ class MainViewController: UIViewController {
 extension MainViewController {
     
     private func setupNavigationBar() {
-        navigationItem.title = NSLocalizedString("JSON Placeholder", comment: "")
+        navigationItem.title = NSLocalizedString("Main", comment: "")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
+    private func setupNameLabel() {
+        nameLabel.text = NSLocalizedString("JSON Placeholder", comment: "")
+    }
+
     private func setupRequestAPIButton() {
         requestAPIButton.setTitle(NSLocalizedString("Request API", comment: ""), for: .normal)
         requestAPIButton.addTarget(self, action: #selector(requestAPITapped), for: .touchUpInside)
@@ -54,7 +73,7 @@ extension MainViewController {
     }
 }
 
-// MARK: - Private Methods
+// MARK: - API Methods
 
 extension MainViewController {
     
@@ -69,10 +88,16 @@ extension MainViewController {
                 return
             }
             
-            if let photos = photos {
+            guard let photos = photos,
+                  !photos.isEmpty else {
                 #if DEBUG
-                print("FetchPhotos success: \(photos.count)")
+                print("FetchPhotos error: photos is empty.")
                 #endif
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: self.photosSegueId, sender: photos)
             }
         }
     }
