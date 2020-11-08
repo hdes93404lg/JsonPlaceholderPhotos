@@ -12,7 +12,8 @@ class PhotosCollectionViewController: UICollectionViewController {
     // MARK: - Properties
     
     private let photoCellId = "PhotoCellId"
-
+    private let detailSegueId = "DetailSegueId"
+    
     var photos: [Photo] = []
     
     // MARK: - VC Lifecycle
@@ -20,13 +21,28 @@ class PhotosCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = NSLocalizedString("Photos", comment: "")
+        setupNavigationBar()
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
+
+    // MARK: - UIStoryboardSegue
+     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        collectionView.collectionViewLayout.invalidateLayout()
+        if segue.identifier == detailSegueId {
+            guard let detailVC = segue.destination as? DetailViewController,
+                  let photo = sender as? Photo else { return }
+            detailVC.photo = photo
+        }
+    }
+}
+
+// MARK: - Setup Methods
+
+extension PhotosCollectionViewController {
+    
+    private func setupNavigationBar() {
+        navigationItem.title = NSLocalizedString("Photos", comment: "")
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
 }
 
@@ -48,8 +64,11 @@ extension PhotosCollectionViewController {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: photoCellId, for: indexPath) as? PhotoCollectionViewCell else {
             return UICollectionViewCell()
         }
-        
-        cell.photo = photos[indexPath.item]
+
+        let photo = photos[indexPath.item]
+        cell.thumbnailImageView.loadImage(with: photo.thumbnailURL)
+        cell.idLabel.text = String(photo.id)
+        cell.titleLabel.text = photo.title
         
         return cell
     }
@@ -58,7 +77,11 @@ extension PhotosCollectionViewController {
 // MARK: - UICollectionViewDelegate
 
 extension PhotosCollectionViewController {
-    
+ 
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let photo = photos[indexPath.item]
+        performSegue(withIdentifier: detailSegueId, sender: photo)
+    }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
