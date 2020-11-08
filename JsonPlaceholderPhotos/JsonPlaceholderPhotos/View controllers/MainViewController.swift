@@ -24,6 +24,12 @@ class MainViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView! {
+        didSet {
+            activityIndicatorView.hidesWhenStopped = true
+        }
+    }
+    
     // MARK: - Properties
     
     private lazy var downloadManager: DownloadManager = {
@@ -62,6 +68,21 @@ extension MainViewController {
     }
 }
 
+// MARK: - Custom Methods
+
+extension MainViewController {
+    
+    private func fetchPhotosStartAnimating() {
+        requestAPIButton.isHidden = true
+        activityIndicatorView.startAnimating()
+    }
+    
+    private func fetchPhotosStopAnimating() {
+        activityIndicatorView.stopAnimating()
+        requestAPIButton.isHidden = false
+    }
+}
+
 // MARK: - Action Methods
 
 extension MainViewController {
@@ -78,7 +99,13 @@ extension MainViewController {
     
     private func fetchPhotos() {
         
+        fetchPhotosStartAnimating()
+        
         downloadManager.fetchPhotos { (photos, error) in
+            
+            DispatchQueue.main.async {
+                self.fetchPhotosStopAnimating()
+            }
             
             if let error = error {
                 #if DEBUG

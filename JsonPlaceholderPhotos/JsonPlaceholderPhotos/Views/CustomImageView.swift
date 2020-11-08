@@ -11,8 +11,33 @@ let imageCache = NSCache<NSString, UIImage>()
 
 class CustomImageView: UIImageView {
     
+    // MARK: - Properties
+    
+    private lazy var activityIndicatorView: UIActivityIndicatorView = {
+        return UIActivityIndicatorView()
+    }()
+    
     var lastImgUrlUsedToLoadImage: String?
-        
+}
+
+// MARK: - Setup Methods
+
+extension CustomImageView {
+    
+    private func setupActivityIndicatorView() {
+        activityIndicatorView.style = .medium
+        activityIndicatorView.hidesWhenStopped = true
+        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(activityIndicatorView)
+        activityIndicatorView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        activityIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+    }
+}
+
+// MARK: - API Methods
+
+extension CustomImageView {
+    
     func loadImage(with urlString: String) {
         
         lastImgUrlUsedToLoadImage = urlString
@@ -25,11 +50,14 @@ class CustomImageView: UIImageView {
             self.image = cachedImage
             return
         }
+        
+        setupActivityIndicatorView()
+        activityIndicatorView.startAnimating()
                 
         URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
             
-            guard let self = self else {
-                return
+            DispatchQueue.main.async {
+                self?.activityIndicatorView.stopAnimating()
             }
             
             if let error = error {
@@ -39,7 +67,7 @@ class CustomImageView: UIImageView {
                 return
             }
             
-            guard self.lastImgUrlUsedToLoadImage == url.absoluteString else {
+            guard self?.lastImgUrlUsedToLoadImage == url.absoluteString else {
                 return
             }
             
@@ -53,7 +81,7 @@ class CustomImageView: UIImageView {
             
             DispatchQueue.main.async {
                 imageCache.setObject(image, forKey: urlString as NSString)
-                self.image = image
+                self?.image = image
             }
         
         }.resume()
