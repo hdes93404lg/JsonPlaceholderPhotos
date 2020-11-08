@@ -27,18 +27,24 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="Bed-wJ-6nL">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="DKH-zq-oIe" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="70" id="1YI-zc-dTS"/>
                             <constraint firstItem="7Gg-V0-PgO" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="4gG-NP-eH6"/>
+                            <constraint firstItem="Bed-wJ-6nL" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="oic-nX-N2q"/>
+                            <constraint firstItem="Bed-wJ-6nL" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="plG-lV-z8J"/>
                             <constraint firstItem="7Gg-V0-PgO" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="rmv-yG-I4a"/>
                             <constraint firstItem="DKH-zq-oIe" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="sXO-es-qev"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="a9L-yF-fb0"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="Bed-wJ-6nL" id="kXh-Mj-rPI"/>
                         <outlet property="nameLabel" destination="DKH-zq-oIe" id="wcr-Y2-4Pq"/>
                         <outlet property="requestAPIButton" destination="7Gg-V0-PgO" id="sxP-B3-oFQ"/>
                         <segue destination="Ubp-eT-JKh" kind="show" identifier="PhotosSegueId" id="g3T-92-lAl"/>
