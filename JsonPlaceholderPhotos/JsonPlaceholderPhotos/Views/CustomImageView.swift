@@ -51,9 +51,8 @@ class CustomImageView: UIImageView {
                 return
             }
             
-            imageCache.setObject(image, forKey: urlString as NSString)
-
             DispatchQueue.main.async {
+                imageCache.setObject(image, forKey: urlString as NSString)
                 self.image = image
             }
         

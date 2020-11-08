@@ -11,12 +11,17 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     // MARK: - IBOutlet Properties
     
-    @IBOutlet weak var thumbnailImageView: CustomImageView!
+    @IBOutlet weak var thumbnailImageView: CustomImageView! {
+        didSet {
+            thumbnailImageView.contentMode = .scaleAspectFill
+        }
+    }
     
     @IBOutlet weak var idLabel: UILabel! {
         didSet {
             idLabel.text = nil
             idLabel.textAlignment = .center
+            idLabel.font = .boldSystemFont(ofSize: 17)
         }
     }
     
@@ -26,17 +31,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             titleLabel.textAlignment = .center
             titleLabel.numberOfLines = 2
             titleLabel.lineBreakMode = .byWordWrapping
-        }
-    }
-    
-    // MARK: - Properties
-    
-    var photo: Photo? {
-        didSet {
-            guard let photo = self.photo else { return }
-            thumbnailImageView.loadImage(with: photo.thumbnailURL)
-            idLabel.text = String(photo.id)
-            titleLabel.text = photo.title
         }
     }
     

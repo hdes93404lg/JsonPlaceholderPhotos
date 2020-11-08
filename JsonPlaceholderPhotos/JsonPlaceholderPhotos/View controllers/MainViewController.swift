@@ -11,8 +11,18 @@ class MainViewController: UIViewController {
 
     // MARK: - IBOutlet Properties
     
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var requestAPIButton: UIButton!
+    @IBOutlet weak var nameLabel: UILabel! {
+        didSet {
+            nameLabel.text = NSLocalizedString("JSON Placeholder", comment: "")
+        }
+    }
+    
+    @IBOutlet weak var requestAPIButton: UIButton! {
+        didSet {
+            requestAPIButton.setTitle(NSLocalizedString("Request API", comment: ""), for: .normal)
+            requestAPIButton.addTarget(self, action: #selector(requestAPITapped), for: .touchUpInside)
+        }
+    }
     
     // MARK: - Properties
     
@@ -28,8 +38,6 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
 
         setupNavigationBar()
-        setupNameLabel()
-        setupRequestAPIButton()
     }
     
     // MARK: - UIStoryboardSegue
@@ -51,15 +59,6 @@ extension MainViewController {
     private func setupNavigationBar() {
         navigationItem.title = NSLocalizedString("Main", comment: "")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-    }
-    
-    private func setupNameLabel() {
-        nameLabel.text = NSLocalizedString("JSON Placeholder", comment: "")
-    }
-
-    private func setupRequestAPIButton() {
-        requestAPIButton.setTitle(NSLocalizedString("Request API", comment: ""), for: .normal)
-        requestAPIButton.addTarget(self, action: #selector(requestAPITapped), for: .touchUpInside)
     }
 }
 
